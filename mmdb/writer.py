@@ -1,3 +1,9 @@
+# Based on the mmdb library from
+# Rinat Ibragimov https://github.com/i-rinat/geoip-mmdb
+
+"""
+mmdb database interface - writer
+"""
 
 from . import types
 from .types import SearchTreeNode, SearchTreeLeaf

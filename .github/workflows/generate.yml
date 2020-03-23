@@ -6,5 +6,17 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install deps
+      run: sudo apt-get install --no-install-recommends -y bgpdump
+
     - name: Generate database
       run: ./demo.py
+
+    - name: End
+      run: ls -ltr
+
+    - name: Upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: output.mmdb
+        path: output.mmdb

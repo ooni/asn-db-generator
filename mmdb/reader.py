@@ -1,3 +1,10 @@
+# Based on the mmdb library from
+# Rinat Ibragimov https://github.com/i-rinat/geoip-mmdb
+
+"""
+mmdb database interface - reader
+"""
+
 from . import types
 from .mmdb import MMDB, MMDBMeta
 from .types import SearchTreeNode, SearchTreeLeaf
@@ -48,8 +55,8 @@ class Reader(object):
 
         u = self._unserialize()
         # assert isinstance(u, dict)
-        if 'continent' not in u and 'registered_country' not in u:
-            print("CReate leaf\n%s\n" % u)
+        #if 'continent' not in u and 'registered_country' not in u:
+        #    print("CReate leaf\n%s\n" % u)
         leaf = SearchTreeLeaf(u)
         self.leaf_cache[offset] = leaf
         return leaf

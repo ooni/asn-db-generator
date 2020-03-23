@@ -1,3 +1,10 @@
+# Based on the mmdb library from
+# Rinat Ibragimov https://github.com/i-rinat/geoip-mmdb
+
+"""
+mmdb database interface - data types
+"""
+
 METADATA_MAGIC = b"\xab\xcd\xefMaxMind.com"
 TYPE_POINTER = 1
 TYPE_UTF8 = 2

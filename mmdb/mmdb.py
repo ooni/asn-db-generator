@@ -1,10 +1,20 @@
-from ipaddress import IPv4Network, IPv6Network
+# Based on the mmdb library from
+# Rinat Ibragimov https://github.com/i-rinat/geoip-mmdb
+
+"""
+mmdb database interface - main module
+"""
+
+from typing import Generator, Union, Tuple, Dict
+from ipaddress import IPv4Network, IPv6Network, ip_network
 
 from . import types
 from .types import Uint16, Uint32, Uint64, Uint128, Int32, Float, Double
 from .types import SearchTreeLeaf, SearchTreeNode
 from .writer import Writer
 from copy import deepcopy
+
+IPNetwork = Union[IPv4Network, IPv6Network]
 
 
 class MMDBMeta(object):
@@ -151,6 +161,40 @@ class MMDB(object):
         _recurse(self.tree, c, path)
         return c
 
+    def walk_networks(self) -> Generator: #[Tuple[IPNetwork, int, str]]:
+        def _walk(node, path):
+            if isinstance(node, SearchTreeNode):
+                for n in _walk(node.left, path + (0,)):
+                    yield n
+                for n in _walk(node.right, path + (1,)):
+                    yield n
+
+            elif isinstance(node, SearchTreeLeaf):
+                ipaddr = path_to_network(path)
+                asn = node.value["autonomous_system_number"].value
+                orgname = node.value["autonomous_system_organization"]
+                yield (ipaddr, asn, orgname)
+
+            elif node is None:
+                # FIXME assert 0
+                # No information about particular network.
+                pass
+
+            else:
+                print(node)
+                raise Exception("Unknown node type")
+
+        return _walk(self.tree, ())
+
+    def get_asn_to_network_dict(self) -> Dict:
+        asn_to_net = {}
+        for net, asn, org_name in self.walk_networks():
+            if asn in asn_to_net:
+                asn_to_net[asn].add(net)
+            else:
+                asn_to_net[asn] = set([net,])
+
+        return asn_to_net
 
 
 def walk_tree(mmdb: MMDB, visitor_leaf=None, visitor_node=None):
@@ -178,7 +222,7 @@ def walk_tree(mmdb: MMDB, visitor_leaf=None, visitor_node=None):
     walk_tree_impl(mmdb.tree, (), visitor_leaf, visitor_node)
 
 
-def path_to_ipaddr(path):
+def path_to_network(path):
     if len(path) >= 128 - 32:
         # ipv4
         path = path[128 - 32 :]
@@ -187,7 +231,8 @@ def path_to_ipaddr(path):
         octets = (
             int("".join(str(c) for c in path[k * 8 : (k + 1) * 8]), 2) for k in range(4)
         )
-        return ".".join(str(k) for k in octets) + "/" + str(mask_len)
+        net = ".".join(str(k) for k in octets) + "/" + str(mask_len)
+        return IPv4Network(net)
 
     else:
         # ipv6
@@ -197,13 +242,14 @@ def path_to_ipaddr(path):
             int("".join(str(c) for c in path[k * 16 : (k + 1) * 16]), 2)
             for k in range(8)
         )
-        return ":".join("{:04x}".format(k) for k in parts) + "/" + str(mask_len)
+        net = ":".join("{:04x}".format(k) for k in parts) + "/" + str(mask_len)
+        return IPv6Network(net)
 
 
 def dump_tree(mmdb: MMDB):
     def visitor_leaf(node: SearchTreeLeaf, path):
         """Visit a leaf"""
-        ipaddr = path_to_ipaddr(path)
+        ipaddr = path_to_network(path)
         print(f"{ipaddr} -> {node.value}")
 
     walk_tree(mmdb, visitor_leaf)
