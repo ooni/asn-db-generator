@@ -56,6 +56,7 @@ def main():
     print("Writing")
     mydb.meta.node_count = mydb.count_tree_elements()["nodes"]
     mydb.write(output_fn)
+    print(mydb.count_tree_elements())
     print("Done")
 
 
