@@ -63,7 +63,7 @@ def main():
     else:
         url = f"http://data.ris.ripe.net/{rname}/{dirname}/{input_fn}"
         print(f"Downloading URL: {url}")
-        #download(url, input_fn)
+        download(url, input_fn)
         print("Download completed")
 
     c = SearchTreeNode(None, None)
