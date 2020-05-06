@@ -5,6 +5,7 @@
 
 from datetime import datetime
 import ipaddress
+import os.path
 import shutil
 import subprocess
 import time
@@ -57,10 +58,13 @@ def main():
     hour = t.hour - t.hour % 8
     tstamp = t.strftime("%Y%m%d")
     input_fn = f"bview.{tstamp}.{hour:02d}00.gz"
-    url = f"http://data.ris.ripe.net/{rname}/{dirname}/{input_fn}"
-    print("Downloading URL: %s" % url)
-    download(url, input_fn)
-    print("Download completed")
+    if os.path.exists(input_fn):
+        print(f"File {input_fn} already downloaded")
+    else:
+        url = f"http://data.ris.ripe.net/{rname}/{dirname}/{input_fn}"
+        print(f"Downloading URL: {url}")
+        #download(url, input_fn)
+        print("Download completed")
 
     c = SearchTreeNode(None, None)
     meta = MMDBMeta()
@@ -77,7 +81,7 @@ def main():
     t0 = time.monotonic()
     next_print_time = t0
     entries_cnt = 0
-    for net, asn in extract_bgpdump.bgpdump_read_networks(input_fn):
+    for net, asn in bgpdump_read_networks(input_fn):
         if isinstance(net, ipaddress.IPv6Network):
             # TODO
             continue
