@@ -1,11 +1,11 @@
 import ipaddress
 import subprocess
 
-bgpdump_binpath = "/usr/bin/bgpdump"
+bgpdump_binpath = "bgpdump"
 
 
 def bgpdump_read_networks(fn):
-    with subprocess.Popen((bgpdump_binpath, fn, "-m"), stdout=subprocess.PIPE) as p:
+    with subprocess.Popen((bgpdump_binpath, "-m", fn), stdout=subprocess.PIPE) as p:
         for line in p.stdout:
             line = line.rstrip().decode()
             chunks = line.split("|")
