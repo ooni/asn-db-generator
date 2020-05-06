@@ -32,8 +32,9 @@ def main():
     tstamp = t.strftime("%Y%m%d")
     input_fn = f"bview.{tstamp}.{hour:02d}00.gz"
     url = f"http://data.ris.ripe.net/{rname}/{dirname}/{input_fn}"
-    print("URL: %s" % url)
+    print("Downloading URL: %s" % url)
     download(url, input_fn)
+    print("Download completed")
 
     c = SearchTreeNode(None, None)
     meta = MMDBMeta()
@@ -47,11 +48,21 @@ def main():
     mydb = MMDB(c, meta)
 
     output_fn = "output.mmdb"
+    t0 = time.monotonic()
+    next_print_time = t0
+    entries_cnt = 0
     for net, asn in extract_bgpdump.bgpdump_read_networks(input_fn):
         if isinstance(net, ipaddress.IPv6Network):
             # TODO
             continue
         mydb.add_asn(net, asn, "")
+        entries_cnt += 1
+        t = time.monotonic()
+        if t > next_print_time:
+            eps = int(entries_cnt / (t - t0))
+            print(f"ASN processed per second (avg): {eps}")
+            next_print_time = t + 5
+
 
     print("Writing")
     mydb.meta.node_count = mydb.count_tree_elements()["nodes"]
