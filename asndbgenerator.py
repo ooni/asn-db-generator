@@ -6,6 +6,7 @@
 from datetime import datetime
 import ipaddress
 import shutil
+import subprocess
 import time
 
 import requests
@@ -16,9 +17,36 @@ from mmdb.mmdb import MMDBMeta, MMDB
 from mmdb.mmdb import SearchTreeNode
 
 
+bgpdump_bin_name = "bgpdump"
+
+
+def bgpdump_read_networks(fn):
+    with subprocess.Popen((bgpdump_bin_name, "-m", fn), stdout=subprocess.PIPE) as p:
+        for line in p.stdout:
+            line = line.rstrip().decode()
+            chunks = line.split("|")
+            assert chunks[0] == "TABLE_DUMP2", chunks
+            assert chunks[2] == "B", chunks
+
+            net = chunks[5]
+            if net == "0.0.0.0/0":
+                continue
+            try:
+                net = ipaddress.IPv4Network(net)
+            except ipaddress.AddressValueError:
+                net = ipaddress.IPv6Network(net)
+
+            try:
+                asn = int(chunks[6].split()[-1])
+            except:
+                pass
+
+            yield net, asn
+
+
 def download(url, fn):
     with requests.get(url, stream=True) as r:
-        with open(fn, 'wb') as f:
+        with open(fn, "wb") as f:
             shutil.copyfileobj(r.raw, f)
 
 
@@ -62,7 +90,6 @@ def main():
             eps = int(entries_cnt / (t - t0))
             print(f"ASN processed per second (avg): {eps}")
             next_print_time = t + 5
-
 
     print("Writing")
     mydb.meta.node_count = mydb.count_tree_elements()["nodes"]
