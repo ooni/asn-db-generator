@@ -11,8 +11,6 @@ import time
 
 import requests
 
-import extract_bgpdump
-
 from mmdb.mmdb import MMDBMeta, MMDB
 from mmdb.mmdb import SearchTreeNode
 
