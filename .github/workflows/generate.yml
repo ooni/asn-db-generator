@@ -10,7 +10,7 @@ jobs:
       run: sudo apt-get install --no-install-recommends -y bgpdump
 
     - name: Generate database
-      run: ./demo.py
+      run: ./asndbgenerator.py
 
     - name: End
       run: ls -ltr
