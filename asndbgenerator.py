@@ -4,13 +4,12 @@
 """
 
 from datetime import datetime
+from shutil import copyfileobj
 import ipaddress
 import os.path
-import shutil
 import subprocess
 import time
-
-import requests
+import urllib.request
 
 from mmdb.mmdb import MMDBMeta, MMDB
 from mmdb.mmdb import SearchTreeNode
@@ -43,28 +42,32 @@ def bgpdump_read_networks(fn):
             yield net, asn
 
 
-def download(url, fn):
-    with requests.get(url, stream=True) as r:
-        with open(fn, "wb") as f:
-            shutil.copyfileobj(r.raw, f)
+def download_if_needed(t, input_fn):
+    router_name = "rrc00"
+    dirname = t.strftime("%Y.%m")
+    url = f"http://data.ris.ripe.net/{router_name}/{dirname}/{input_fn}"
+
+    print(f"Fetching URL: {url}")
+    r = urllib.request.urlopen(url)
+    size = r.length
+
+    if os.path.exists(input_fn) and os.stat(input_fn).st_size == size:
+        print(f"File {input_fn} already downloaded")
+    else:
+        with open(input_fn, "wb") as f:
+            copyfileobj(r, f)
+        assert os.stat(input_fn).st_size == size
+        print("Download completed")
 
 
 def main():
     # http://data.ris.ripe.net/rrc00/2020.03/bview.20200323.1600.gz
 
-    rname = "rrc00"
-    t = datetime.now()
-    dirname = t.strftime("%Y.%m")
+    t = datetime.utcnow()
     hour = t.hour - t.hour % 8
     tstamp = t.strftime("%Y%m%d")
     input_fn = f"bview.{tstamp}.{hour:02d}00.gz"
-    if os.path.exists(input_fn):
-        print(f"File {input_fn} already downloaded")
-    else:
-        url = f"http://data.ris.ripe.net/{rname}/{dirname}/{input_fn}"
-        print(f"Downloading URL: {url}")
-        download(url, input_fn)
-        print("Download completed")
+    download_if_needed(t, input_fn)
 
     c = SearchTreeNode(None, None)
     meta = MMDBMeta()
