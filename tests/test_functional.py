@@ -89,4 +89,6 @@ def test_write_simple2():
     db.add_asn(n, 15169, "a")
     n = ipaddress.ip_network("8.8.8.8/32")
     db.add_asn(n, 3280, "b")
+    x = db.get_asn_to_network_dict()
     db.write("tests/data/test_write_simple2.mmdb")
+    assert 15169 in x
