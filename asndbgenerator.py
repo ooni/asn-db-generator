@@ -12,7 +12,7 @@ import time
 import urllib.request
 
 from mmdb.mmdb import MMDBMeta, MMDB
-from mmdb.mmdb import SearchTreeNode
+from mmdb.mmdb import SearchTreeNode, create_empty_mmdb
 
 
 bgpdump_bin_name = "bgpdump"
@@ -22,6 +22,8 @@ def bgpdump_read_networks(fn):
     with subprocess.Popen((bgpdump_bin_name, "-m", fn), stdout=subprocess.PIPE) as p:
         for line in p.stdout:
             line = line.rstrip().decode()
+            # for line in open("tests/data/888.txt"):
+            #        line = line.rstrip()
             chunks = line.split("|")
             assert chunks[0] == "TABLE_DUMP2", chunks
             assert chunks[2] == "B", chunks
@@ -40,6 +42,9 @@ def bgpdump_read_networks(fn):
                 pass
 
             yield net, asn
+            # TODO: check exit code
+            # TODO smoke check on number of entries
+            # TODO smoke check on 8.8.8.8 and few others
 
 
 def download_if_needed(t, input_fn):
@@ -69,16 +74,7 @@ def main():
     input_fn = f"bview.{tstamp}.{hour:02d}00.gz"
     download_if_needed(t, input_fn)
 
-    c = SearchTreeNode(None, None)
-    meta = MMDBMeta()
-    meta.build_epoch = int(time.time())
-    meta.database_type = "GeoLite2-ASN"
-    meta.description = {"en": "GeoLite2 ASN Database"}
-    meta.ip_version = 6
-    meta.languages = ["en"]
-    meta.node_count = 1
-    meta.record_size = 28
-    mydb = MMDB(c, meta)
+    mydb = create_empty_mmdb()
 
     output_fn = "output.mmdb"
     t0 = time.monotonic()

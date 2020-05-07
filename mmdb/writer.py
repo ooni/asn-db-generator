@@ -119,10 +119,33 @@ class Writer(object):
             # Then serialize the metadata dict
             f.write(self._serialize_value(self.meta.get()))
 
+    def _set_node_count(self) -> dict:
+        def _recurse(node, c, path):
+            if isinstance(node, SearchTreeNode):
+                c["nodes"] += 1
+                _recurse(node.left, c, path + (0,))
+                _recurse(node.right, c, path + (1,))
+
+            elif isinstance(node, SearchTreeLeaf):
+                c["leaves"] += 1
+
+            elif node is None:
+                c["empty"] += 1
+                pass
+
+            else:
+                raise Exception("Unknown node type %r" % node)
+
+        c = dict(leaves=0, nodes=0, empty=0)
+        path = ()
+        _recurse(self.tree, c, path)
+        self.meta.node_count = c["nodes"]
+
     def write(self, fname):
         """Write .mmdb file
         """
         tmp = deepcopy(self)
+        tmp._set_node_count()
         tmp._write(fname)
 
 

@@ -14,6 +14,8 @@ from .types import SearchTreeLeaf, SearchTreeNode
 from .writer import Writer
 from copy import deepcopy
 
+import time
+
 IPNetwork = Union[IPv4Network, IPv6Network]
 
 
@@ -72,14 +74,14 @@ class MMDB(object):
             assert c
             if isinstance(c, SearchTreeLeaf):
                 bits = "".join(str(s) for s in path)
-                #print(f"Replacing node {bits} with {value}")
+                # print(f"Replacing node {bits} with {value}")
                 c = SearchTreeNode(None, None)
                 if i:
                     prev.right = c
                 else:
                     prev.left = c
-                #return
-                #raise Exception(f"Attempting to add {path}")
+                # return
+                # raise Exception(f"Attempting to add {path}")
             prev = c
             if i:
                 c = c.right
@@ -138,7 +140,6 @@ class MMDB(object):
         path = self._netv4_to_bits(network)
         self._add_leaf(path, d)
 
-
     def count_tree_elements(self) -> dict:
         def _recurse(node, c, path):
             if isinstance(node, SearchTreeNode):
@@ -161,7 +162,7 @@ class MMDB(object):
         _recurse(self.tree, c, path)
         return c
 
-    def walk_networks(self) -> Generator: #[Tuple[IPNetwork, int, str]]:
+    def walk_networks(self) -> Generator:  # [Tuple[IPNetwork, int, str]]:
         def _walk(node, path):
             if isinstance(node, SearchTreeNode):
                 for n in _walk(node.left, path + (0,)):
@@ -253,3 +254,29 @@ def dump_tree(mmdb: MMDB):
         print(f"{ipaddr} -> {node.value}")
 
     walk_tree(mmdb, visitor_leaf)
+
+
+def create_empty_mmdb(
+    build_epoch=None,
+    database_type="GeoLite2-ASN",
+    description_en="GeoLite2 ASN Database",
+    ip_version=6,
+    node_count=1,
+    record_size=28,
+):
+    """Created empty database
+    """
+    c = SearchTreeNode(None, None)
+    meta = MMDBMeta()
+    if build_epoch is None:
+        build_epoch = int(time.time())
+    else:
+        assert build_epoch > 0
+    meta.build_epoch = build_epoch
+    meta.database_type = database_type
+    meta.description = {"en": description_en}
+    meta.ip_version = ip_version
+    meta.languages = ["en"]
+    meta.node_count = node_count
+    meta.record_size = record_size
+    return MMDB(c, meta)
