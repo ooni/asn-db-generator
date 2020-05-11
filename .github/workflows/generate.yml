@@ -7,6 +7,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Show apt version
+      run: apt-get -v
+
     - name: Update apt
       run: echo "deb [ arch=amd64 allow-insecure=yes trusted=yes ] https://perl-team.pages.debian.net/modules/packages/libmaxmind-db-writer-perl/ autobuilt main" >> /etc/apt/sources.list
     - name: Update apt
