@@ -7,6 +7,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Update apt
+      run: apt-get update
+
     - name: Install deps
       run: apt-get install --no-install-recommends -y bgpdump
 
