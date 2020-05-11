@@ -1,16 +1,23 @@
-name: Docker Image CI
+name: Generate ASN database
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: debian:sid
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install deps
-      run: sudo apt-get install --no-install-recommends -y bgpdump
+    - name: Show apt version
+      run: apt-get -v
 
-    - name: Generate database
-      run: ./generator.sh
+    - name: Update apt
+      run: apt-get update
+
+    - name: Install deps
+      run: apt-get install --no-install-recommends -y bgpdump curl libmaxmind-db-writer-perl python3 python3-gdbm
+
+    - name: Generate database using RIPE BGP dump and CAIDA AS names
+      run: ./generator_ripe_caida.sh
 
     - name: End
       run: ls -ltr
@@ -18,5 +25,13 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
-        name: output.mmdb
-        path: output.mmdb
+        name: asn.mmdb
+        path: asn.mmdb
+
+    #- name: Upload binaries to release
+    #  uses: svenstaro/upload-release-action@v2
+    #  with:
+    #    repo_token: ${{ secrets.GITHUB_TOKEN }}
+    #    file: asn.mmdb
+    #    asset_name: ${{ matrix.asset_name }}
+    #    tag: ${{ github.ref }}
