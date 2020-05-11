@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: debian:buster
+    container: debian:sid
     steps:
     - uses: actions/checkout@v2
 
