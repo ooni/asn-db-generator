@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Generate ASN database
 on: [push]
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
       run: apt-get update
 
     - name: Install deps
-      run: apt-get install --no-install-recommends -y bgpdump
+      run: apt-get install --no-install-recommends -y bgpdump curl
 
     - name: Generate database
       run: ./generator.sh
