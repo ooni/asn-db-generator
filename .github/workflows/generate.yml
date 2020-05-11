@@ -8,7 +8,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install deps
-      run: sudo apt-get install --no-install-recommends -y bgpdump
+      run: apt-get install --no-install-recommends -y bgpdump
 
     - name: Generate database
       run: ./generator.sh
