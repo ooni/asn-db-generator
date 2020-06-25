@@ -3,6 +3,7 @@ use strict;
 use warnings "FATAL";
 use Scalar::Util qw(looks_like_number);
 use MaxMind::DB::Writer::Tree;
+
 my %types = (
     autonomous_system_number => 'uint32',
     autonomous_system_organization => 'utf8_string',
@@ -10,25 +11,27 @@ my %types = (
 my $tree = MaxMind::DB::Writer::Tree->new(
     ip_version            => 6,
     record_size           => 28,
-    database_type         => 'My-IP-Data',
+    database_type         => 'GeoLite2-ASN',
     languages             => ['en'],
-    description           => { en => 'My database of IP data' },
+    description           => { en => 'OONI database' },
     map_key_type_callback => sub { $types{ $_[0] } },
 );
-# TODO(bassosimone): we assume the input has already been deduped
+
 my $filename = $ARGV[0];
 open my $filep, $filename or die "Could not open $filename: $!";
 while (my $line = <$filep>) {
-    my @items = split / /, $line;
-    next if @items != 3;
+    my @items = split(/ /, $line, 4);
+    die "Incorrect format:\n" . $line unless @items == 4;
     my $route = "$items[0]/$items[1]";
     next if !looks_like_number($items[2]);
     my $asn = int($items[2]);
+    my $orgname = $items[3];
+    chomp $orgname;
     $tree->insert_network(
         $route,
         {
-            autonomous_system_number => int($asn),
-            autonomous_system_organization => "",
+            autonomous_system_number => $asn,
+            autonomous_system_organization => $orgname
         },
     );
 }
