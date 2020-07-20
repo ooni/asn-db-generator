@@ -16,8 +16,8 @@ jobs:
     - name: Install deps
       run: apt-get install --no-install-recommends -y bgpdump curl libmaxmind-db-writer-perl
 
-    - name: Generate database
-      run: ./generator.sh
+    - name: Generate database using RIPE BGP dump and CAIDA AS names
+      run: ./generator_ripe_caida.sh
 
     - name: End
       run: ls -ltr
