@@ -50,6 +50,7 @@ for ipa in $(cat testlist); do
   mmdblookup --file output.mmdb -i $ipa >/dev/null;
 done
 
+cp output.mmdb asn.mmdb
 mv output.mmdb ooni_caida_$tstamp.mmdb
 
 echo "$(date) done"

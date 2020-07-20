@@ -14,7 +14,7 @@ jobs:
       run: apt-get update
 
     - name: Install deps
-      run: apt-get install --no-install-recommends -y bgpdump curl libmaxmind-db-writer-perl
+      run: apt-get install --no-install-recommends -y bgpdump curl libmaxmind-db-writer-perl python3-minimal
 
     - name: Generate database using RIPE BGP dump and CAIDA AS names
       run: ./generator_ripe_caida.sh
@@ -25,5 +25,13 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
-        name: output.mmdb
-        path: output.mmdb
+        name: asn.mmdb
+        path: asn.mmdb
+
+    #- name: Upload binaries to release
+    #  uses: svenstaro/upload-release-action@v2
+    #  with:
+    #    repo_token: ${{ secrets.GITHUB_TOKEN }}
+    #    file: asn.mmdb
+    #    asset_name: ${{ matrix.asset_name }}
+    #    tag: ${{ github.ref }}
