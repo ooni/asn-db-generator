@@ -11,12 +11,10 @@ jobs:
       run: apt-get -v
 
     - name: Update apt
-      run: echo "deb [ arch=amd64 allow-insecure=yes trusted=yes ] https://perl-team.pages.debian.net/modules/packages/libmaxmind-db-writer-perl/ autobuilt main" >> /etc/apt/sources.list
-    - name: Update apt
       run: apt-get update
 
     - name: Install deps
-      run: apt-get install --no-install-recommends -y bgpdump curl libmaxmind-db-writer-perl --allow-unauthenticated
+      run: apt-get install --no-install-recommends -y bgpdump curl libmaxmind-db-writer-perl
 
     - name: Generate database
       run: ./generator.sh
