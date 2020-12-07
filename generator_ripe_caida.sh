@@ -8,7 +8,7 @@ set -exuo pipefail
 # Use cpu-efficient tools across 2-4 cores
 
 tstamp=$(date +%Y%m%d%H%M%S)
-caida_tstamp=20200701
+caida_tstamp=20201001
 
 echo "$(date) starting generator"
 # Fetch BGP dump
