@@ -8,7 +8,10 @@ set -exuo pipefail
 # Use cpu-efficient tools across 2-4 cores
 
 tstamp=$(date +%Y%m%d%H%M%S)
-caida_tstamp=$(date +%Y%m%01)
+# Obtain the last timestamp of caida data from the listing page. This should work until 2099 or until they change the format of their timestamp
+caida_tstamp=$(curl http://data.caida.org/datasets/as-organizations/ | grep "<a href=\"20" | tail -n 1 | cut -d '"' -f2 | cut -d "." -f1)
+# Safeguard to ensure we parsed the timestamp properly
+[[ $caida_tstamp =~ ^20[0-9]{2}[0-1][0-9][0-3][0-9] ]] || exit 1
 
 echo "$(date) starting generator"
 # Fetch BGP dump
