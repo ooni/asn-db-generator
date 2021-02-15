@@ -9,7 +9,7 @@ set -exuo pipefail
 
 tstamp=$(date +%Y%m%d%H%M%S)
 # Obtain the last timestamp of caida data from the listing page. This should work until 2099 or until they change the format of their timestamp
-caida_tstamp=$(curl http://data.caida.org/datasets/as-organizations/ | grep "<a href=\"20" | tail -n 1 | cut -d '"' -f2 | cut -d "." -f1)
+caida_tstamp=$(curl -fsSL https://data.caida.org/datasets/as-organizations/ | grep "<a href=\"20" | tail -n 1 | cut -d '"' -f2 | cut -d "." -f1)
 # Safeguard to ensure we parsed the timestamp properly
 [[ $caida_tstamp =~ ^20[0-9]{2}[0-1][0-9][0-3][0-9] ]] || exit 1
 
@@ -32,7 +32,7 @@ curl -fsS $rurl | gunzip | bgpdump -m - \
 echo "entries in dbdata0: $(wc -l dbdata0)"
 
 # Fetch CAIDA AS names
-curl -fsS http://data.caida.org/datasets/as-organizations/$caida_tstamp.as-org2info.txt.gz > caida_input.gz
+curl -fsS https://data.caida.org/datasets/as-organizations/$caida_tstamp.as-org2info.txt.gz > caida_input.gz
 
 # Generate caida_asn_to_name.dbm from CAIDA AS names
 zcat caida_input.gz | ./parse_caida.py
