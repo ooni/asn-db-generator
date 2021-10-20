@@ -21,11 +21,11 @@ echo "$(date) starting generator"
 # Sort by subnet size
 rdir=$(date +%Y.%m)
 rtstamp=$(date +%Y%m%d)
-rurl="http://data.ris.ripe.net/rrc00/$rdir/bview.$rtstamp.0000.gz"
+rurl="https://data.ris.ripe.net/rrc00/$rdir/bview.$rtstamp.0000.gz"
 echo "fetching $rurl"
 # e.g. http://data.ris.ripe.net/rrc00/2020.06/bview.20200617.0000.gz
 # Here bgpdump is the biggest bottleneck
-curl -fsS $rurl | gunzip | bgpdump -m - \
+curl -fsS $rurl | gunzip - | bgpdump -m - \
   | cut -d '|' -f6,7 | grep -v '^0' | grep -v '^::/0|' | tr '|' ' ' | awk -F " " '{print $1,$NF}' \
   | uniq | tr '/' ' ' | sort -k 2 -n > dbdata0
 
