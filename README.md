@@ -27,7 +27,8 @@ data extracted using `bgpdump` to CAIDA ASN data;
 ## Dependencies
 
 This generator is designed to run on Debian GNU/Linux. It may work
-also on other Unix-like systems. Please, see [.github/workflows/generate.yml]
+also on other Unix-like systems. Please, see [the CI build script](
+.github/workflows/generate.yml)
 to see which are the expected dependencies.
 
 ## Release process
