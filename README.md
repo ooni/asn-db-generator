@@ -27,6 +27,9 @@ data extracted using `bgpdump` to CAIDA ASN data;
 Each individual script contains a comment explaining with
 greater detail what its input and output look like.
 
+The `VERSION` file changes every time we bless a new release: we
+need something to change in the tree to make a release.
+
 ## Dependencies
 
 This generator is designed to run on Debian GNU/Linux. It may work
@@ -36,4 +39,5 @@ to see which are the expected dependencies.
 
 ## Release process
 
-Run `./release.sh` and follow instructions.
+Run `./release.sh` from the `master` branch without any uncommitted
+changes or untracked files and follow instructions.

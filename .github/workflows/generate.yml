@@ -1,10 +1,14 @@
 name: Generate ASN database
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
   schedule:
     - cron: "14 17 * * 3"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,11 +36,3 @@ jobs:
       with:
         name: asn.mmdb
         path: asn.mmdb
-
-    #- name: Upload binaries to release
-    #  uses: svenstaro/upload-release-action@v2
-    #  with:
-    #    repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #    file: asn.mmdb
-    #    asset_name: ${{ matrix.asset_name }}
-    #    tag: ${{ github.ref }}
