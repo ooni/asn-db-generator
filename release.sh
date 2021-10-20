@@ -23,7 +23,7 @@ git checkout -b release/$now
 echo $now > VERSION
 git add VERSION
 git commit -am "Release $now"
-git push origin $now
+git push origin release/$now
 set +x
 
 echo "Now do the following:" 
