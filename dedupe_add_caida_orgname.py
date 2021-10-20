@@ -18,8 +18,9 @@ def main():
         net, asn = line.rstrip().rsplit(" ", 1)
         if net != current_net:
             if current_net is not None:
+                # Deduplicate ASNs using the most common occurrence
                 oasn = c.most_common(1)[0][0]
-                orgname = asn_to_orgname.get(oasn, b"<unknown>").decode()
+                orgname = asn_to_orgname.get(oasn, "<unknown>")
                 print(f"{current_net} {oasn} {orgname}")
                 c = Counter()
             current_net = net
