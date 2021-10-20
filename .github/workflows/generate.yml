@@ -1,6 +1,8 @@
 name: Generate ASN database
 on:
   push:
+    branches:
+      - master
   schedule:
     - cron: "14 17 * * 3"
 jobs:
