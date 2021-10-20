@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 
 """
-Parse data from
+This script parses data from
 https://www.caida.org/data/request_user_info_forms/as_organizations.xml
 
+Input:
+
+- we read the CAIDA ASN dataset from stdin
+
+Output:
+
+- the caida_asn_to_name.dbm file
 """
 
 # format: aut|changed|aut_name|org_id|opaque_id|source
@@ -39,7 +46,7 @@ import sys
 import dbm
 import dbm.gnu
 
-OUTPUT_FN = "caida_asn_to_name.dbm"
+OUTPUT_FILE_NAME = "caida_asn_to_name.dbm"
 
 
 def feed_input_lines():  # -> Generator[str]:
@@ -80,7 +87,14 @@ def main():
             continue
 
         except ValueError:
-            assert o[-1] in ("AFRINIC", "APNIC", "ARIN", "LACNIC", "RIPE", "JPNIC",), o
+            assert o[-1] in (
+                "AFRINIC",
+                "APNIC",
+                "ARIN",
+                "LACNIC",
+                "RIPE",
+                "JPNIC",
+            ), o
 
             if o[0].startswith("@"):
                 assert o[0] == "@aut"
@@ -96,7 +110,7 @@ def main():
 
     # asn_to_name = {asn:org_id_to_name.get(oi) for asn, oi in asn_to_org_id.items()}
 
-    with dbm.gnu.open(OUTPUT_FN, "n") as db:
+    with dbm.gnu.open(OUTPUT_FILE_NAME, "n") as db:
         for asn, org_id in asn_to_org_id.items():
             try:
                 db[str(asn)] = org_id_to_name[org_id]

@@ -1,7 +1,34 @@
 #!/usr/bin/env python3
 
 """
-Deduplicate lines and add org name
+This script deduplicates ASNs using the most common occurrence while
+merging together routing data (RIPE) and ASN data (CAIDA).
+
+Inputs:
+
+- from stdin we read a _sorted_ list of lines like `<addr> <netmask>`
+where the sort key is the netmask ascending
+
+- from caida_asn_to_name.dbm we read ASN->name mappings
+
+Output:
+
+- to stdout `<network> <asn> <asn_name>` where `<network>`
+is the string `<address> <netmask>`
+
+Example input:
+
+    11.0.0.0 8 749
+    12.0.0.0 8 7018
+    17.0.0.0 8 714
+    21.0.0.0 8 749
+
+Example output:
+
+    11.0.0.0 8 749 DoD Network Information Center
+    12.0.0.0 8 7018 AT&T Services, Inc.
+    17.0.0.0 8 714 Apple Inc.
+    21.0.0.0 8 749 DoD Network Information Center
 """
 
 import dbm
