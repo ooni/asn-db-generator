@@ -43,6 +43,7 @@ def main():
             if got_info != expected_info:
                 sys.stderr.write(f"mismatch: {expected_info} != {got_info}\n")
                 sys.exit(1)
+            print(f"{ipaddr} looks good: {got_info}")
 
 
 if __name__ == "__main__":
