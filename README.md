@@ -24,6 +24,9 @@ data extracted using `bgpdump` to CAIDA ASN data;
 
 - `./writedb.pl` writes the `output.mmdb` file.
 
+Each individual script contains a comment explaining with
+greater detail what its input and output look like.
+
 ## Dependencies
 
 This generator is designed to run on Debian GNU/Linux. It may work
