@@ -22,13 +22,17 @@ them to an intermediate file for later consumption;
 choosing the most common occurrence _and_ merges routing
 data extracted using `bgpdump` to CAIDA ASN data;
 
-- `./writedb.pl` writes the `output.mmdb` file.
+- `./writedb.pl` writes the `asn.mmdb` file.
 
 Each individual script contains a comment explaining with
 greater detail what its input and output look like.
 
 The `VERSION` file changes every time we bless a new release: we
 need something to change in the tree to make a release.
+
+## Testing
+
+Run `./smoketest.py` to smoke test `asn.mmdb`.
 
 ## Dependencies
 

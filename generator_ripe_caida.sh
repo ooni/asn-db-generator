@@ -50,16 +50,7 @@ echo "$(date) writing to mmb"
 ./writedb.pl dbdata
 
 echo "$(date) generation done"
-ls -lh output.mmdb
-
-# Trivial smoke test
-# mmdblookup exits > 0 when ipaddrs are not found
-for ipa in $(cat testlist); do
-  mmdblookup --file output.mmdb -i $ipa >/dev/null;
-done
-
-cp output.mmdb asn.mmdb
-mv output.mmdb ooni_caida_$tstamp.mmdb
+ls -lh asn.mmdb
 
 echo "$(date) done"
 

@@ -47,7 +47,7 @@ def main():
             if current_net is not None:
                 # Deduplicate ASNs using the most common occurrence
                 oasn = c.most_common(1)[0][0]
-                orgname = asn_to_orgname.get(oasn, "<unknown>")
+                orgname = asn_to_orgname.get(oasn, b"<unknown>").decode()
                 print(f"{current_net} {oasn} {orgname}")
                 c = Counter()
             current_net = net
@@ -55,7 +55,7 @@ def main():
 
     # Deduplicate ASNs using the most common occurrence
     asn = c.most_common(1)[0][0]
-    orgname = asn_to_orgname.get(asn, "<unknown>")
+    orgname = asn_to_orgname.get(asn, b"<unknown>").decode()
     print(f"{current_net} {asn} {orgname}")
 
     asn_to_orgname.close()

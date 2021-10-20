@@ -4,7 +4,7 @@
 #
 #     <network> <netmask> <asn> <asn_name>
 #
-# and writes it into output.mmdb. We bind to each
+# and writes it into asn.mmdb. We bind to each
 # <network>/<netmask> node a dictionary pointing to
 # the ASN and the ORG name using the same naming
 # convention used by MaxMind-provided DBs.
@@ -46,6 +46,6 @@ while (my $line = <$filep>) {
     );
 }
 close $filep;
-open my $outfile, '>:raw', 'output.mmdb';
+open my $outfile, '>:raw', 'asn.mmdb';
 $tree->write_tree($outfile);
 close $outfile;
