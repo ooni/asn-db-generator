@@ -1,15 +1,13 @@
 #!/usr/bin/env perl
 
-/*
- * This script takes in input a list formatted like
- *
- *     <network> <netmask> <asn> <asn_name>
- *
- * and writes it into `output.mmdb`. We bind to each
- * `<network>/<netmask>` node a dictionary pointing to
- * the ASN and the ORG name using the same naming
- * convention used by MaxMind-provided DBs.
- */
+# This script takes in input a list formatted like
+#
+#     <network> <netmask> <asn> <asn_name>
+#
+# and writes it into output.mmdb. We bind to each
+# <network>/<netmask> node a dictionary pointing to
+# the ASN and the ORG name using the same naming
+# convention used by MaxMind-provided DBs.
 
 use strict;
 use warnings "FATAL";
