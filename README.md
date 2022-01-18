@@ -1,5 +1,8 @@
 # ASN MMDB generator
 
+**Status**: discontinued. See [probe#1959](https://github.com/ooni/probe/issues/1959)
+for additional information on why we discontinued this repository.
+
 Code for generating the `asn.mmdb` we use in OONI clients.
 
 Report issues at https://github.com/ooni/probe.
